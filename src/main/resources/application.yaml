@@ -1,0 +1,26 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: kafka-test
+  cloud:
+    config:
+      enabled: false
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    mode: 'PLAINTEXT'
+    producer:
+      topic:
+        test-outgoing: ${KAFKA_CONSUMER_SEND_TEST_TOPIC:mis_file-api_local}
+    consumer:
+      group-id: report_group
+      topic:
+        test-incoming: ${KAFKA_PRODUCER_GET_TEST_TOPIC:mis_file-api_to_report_local}
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8762/eureka}
