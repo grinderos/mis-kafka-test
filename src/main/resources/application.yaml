@@ -24,3 +24,6 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL:http://localhost:8762/eureka}
+
+zookeeper:
+  connection: localhost:2181

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,6 +43,7 @@ public class OuterController {
     public ResponseEntity<byte[]> sendPdfFileInKafka() {
 
         UUID operationId = UUID.randomUUID();
+//        UUID operationId = UUID.fromString("5376d494-20ae-4b91-ac90-0d5d39cd1289");
 //        UUID userId = UUID.randomUUID();
         UUID userId = UUID.fromString("31c2cd49-939a-4227-ae8e-c95b0a4456b6");
         System.out.println("operationId = " + operationId + "\n" + "userId = " + userId);
@@ -81,7 +83,10 @@ public class OuterController {
         DocumentRole docRole = DocumentRole.IDENTIFICATION_DOCUMENT;
         DocumentDestination docDest = DocumentDestination.PERSONAL;
 
-        Path path = Paths.get("/image.jpeg");
+        Path path = Paths.get(getClass().getClassLoader().getResource("image.jpeg").toURI());
+
+//        Path path = Paths.get("/image.jpeg");
+
         byte[] bytes = Files.readAllBytes(path);
 
         FileTransferDTO newDoc = FileTransferDTO.builder()
@@ -94,11 +99,46 @@ public class OuterController {
                 .build();
 
 
-
         System.out.println("newDoc ------------------------");
         System.out.println(newDoc);
         kafkaSenderService.sendToKafkaAsync(sendTopic, newDoc);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
+    }
+
+    @SneakyThrows
+    @GetMapping("/send-excel")
+    public ResponseEntity<byte[]> sendExcelFileInKafka() {
+
+        UUID operationId = UUID.randomUUID();
+//        UUID operationId = UUID.fromString("5376d494-20ae-4b91-ac90-0d5d39cd1289");
+//        UUID userId = UUID.randomUUID();
+        UUID userId = UUID.fromString("31c2cd49-939a-4227-ae8e-c95b0a4456b6");
+        System.out.println("operationId = " + operationId + "\n" + "userId = " + userId);
+        DocumentType docType = DocumentType.XLSX;
+        DocumentRole docRole = DocumentRole.BLANK;
+        DocumentDestination docDest = DocumentDestination.PERSONAL;
+
+        Path path = Paths.get(getClass().getClassLoader().getResource("EXCEL.xlsx").toURI());
+        byte[] bytes = Files.readAllBytes(path);
+
+        FileTransferDTO newDoc = FileTransferDTO.builder()
+                .operationId(operationId)
+                .userId(userId)
+                .documentType(docType)
+                .destination(docDest)
+                .role(docRole)
+                .body(bytes)
+                .build();
+
+//        String email = "asdasd";
+//        boolean sendEmail = true;
+//        String str2 = email == null || email.length() < 6 ? null : email;
+//        String str3 = sendEmail ? (email != null && email.length() > 5 ? email : null) : null;
+
+        System.out.println("newDoc ------------------------");
+        System.out.println(newDoc);
+        kafkaSenderService.sendToKafkaAsync(sendTopic, newDoc);
+        return ResponseEntity.ok().contentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")).body(bytes);
     }
 
     @SneakyThrows

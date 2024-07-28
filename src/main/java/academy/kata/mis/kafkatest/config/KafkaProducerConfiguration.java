@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.HashMap;
@@ -37,7 +38,8 @@ public class KafkaProducerConfiguration {
         Map<String, Object> properties = new HashMap<>();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomFileTransferDTOJsonSerializer.class.getName());
+//        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomFileTransferDTOJsonSerializer.class.getName());
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
         properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaMode);
         properties.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
         properties.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "PEM");

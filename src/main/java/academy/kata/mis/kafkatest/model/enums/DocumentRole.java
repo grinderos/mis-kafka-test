@@ -4,5 +4,6 @@ public enum DocumentRole {
     REPORT,
     BLANK,
     IDENTIFICATION_DOCUMENT,
-    XRAY_IMAGE
+    XRAY_IMAGE,
+    UNCATEGORIZED
 }
